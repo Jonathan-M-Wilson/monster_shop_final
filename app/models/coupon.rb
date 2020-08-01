@@ -5,4 +5,12 @@ class Coupon < ApplicationRecord
 
   belongs_to :merchant
   has_many :orders
-end 
+
+  def enabled?
+    if enabled
+      "Enabled"
+    else
+      "Disabled"
+    end
+  end 
+end
