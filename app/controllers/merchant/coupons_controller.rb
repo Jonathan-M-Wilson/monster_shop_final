@@ -47,6 +47,17 @@ class Merchant::CouponsController < Merchant::BaseController
     end
   end
 
+  def destroy
+    coupon = Coupon.find(params[:id])
+    if coupon.enabled? == "Enabled"
+      flash[:error] = "This coupon is currently in use. Please disable before Deleting"
+    else
+      coupon.delete
+      flash[:success] = "This coupon has been Deleted"
+    end
+    redirect_to '/merchant/coupons'
+  end
+
   private
   def coupon_params
     params.require('coupon').permit(:name, :code, :percent_off)
