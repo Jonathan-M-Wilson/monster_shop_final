@@ -12,6 +12,10 @@ class Merchant::CouponsController < Merchant::BaseController
     @coupon = Coupon.find(params[:id])
   end
 
+  def edit
+    @coupon = Coupon.find(params[:id])
+  end
+
   def create
     @coupon = current_user.merchant.coupons.new(coupon_params)
     if @coupon.save
