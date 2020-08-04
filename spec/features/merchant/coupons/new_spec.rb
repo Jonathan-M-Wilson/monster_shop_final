@@ -138,7 +138,7 @@ RSpec.describe 'As a logged-in merchant user', type: :feature do
         end
 
         it 'I see an error message and am returned to the form which shows my previously entered info' do
-          expect(page).to have_content("Percent off Field is empty or range is outside 0-100")
+          expect(page).to have_content("Percent off is not included in the list")
           expect(page.find('h1').text).to eq('Create New Coupon')
           expect(page.find_field('Name').value).to eq('Another Deal')
           expect(page.find_field('Code').value).to eq('Another1')
