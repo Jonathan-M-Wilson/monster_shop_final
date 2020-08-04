@@ -169,4 +169,81 @@ RSpec.describe 'Cart Show Page' do
       end
     end
   end
+
+  describe 'When I return to my cart and have items that qualify for a discount' do
+    before(:each) do
+      @meg = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
+      @brian = Merchant.create!(name: 'Brians Bagels', address: '125 Main St', city: 'Denver', state: 'CO', zip: 80218)
+
+      @ogre = @meg.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 15 )
+      @giant = @meg.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
+      @hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
+
+      @merchant_user = User.create!(name: "Jose",
+                                    address: "789 Jkl St.",
+                                    city: "Denver",
+                                    state: "Colorado",
+                                    zip: "80202",
+                                    email: "merchant@hotmail.com",
+                                    password: "mer",
+                                    role: 1,
+                                    merchant_id: @meg.id)
+
+    @coupon_1 = @meg.coupons.create!(name: "4th of July 5%-Off 2 or more", code: "FREEDOM", min_items: 2, percent_off: 5, merchant: @meg)
+    @coupon_2 = @meg.coupons.create!(name: "Holiday Weekend 10%-Off 5 or more", code: "TAKE50", min_items: 5, percent_off: 10, merchant: @meg)
+    @coupon_3 = @meg.coupons.create!(name: "Bulk 20%-Off 20 or more", code: "BULK", min_items: 10, percent_off: 20, merchant: @meg, enabled: false)
+
+      visit root_path
+      click_on 'Log In'
+
+      fill_in 'Email', with: @merchant_user.email
+      fill_in 'Password', with: @merchant_user.password
+
+      click_button 'Log In'
+
+      visit "/items/#{@ogre.id}"
+      click_button 'Add to Cart'
+
+      visit '/cart'
+    end
+
+    it "If I add items that qualify for a discount, my total is updated to show this change" do
+      expect(page).to have_content("Subtotal: #{number_to_currency(@ogre.price * 1)}")
+
+      within "#item-#{@ogre.id}" do
+        click_button('More of This!')
+        click_button('More of This!')
+      end
+        expect(page).to have_content("Total: #{number_to_currency(@ogre.price * 3)}")
+        expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 3) / 1.05)}")
+    end
+
+    it "If order qualifies for more than one coupon, the greatest discount applies" do
+      within "#item-#{@ogre.id}" do
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+      end
+      visit '/cart'
+      expect(page).to have_content("Total: #{number_to_currency(@ogre.price * 5)}")
+      expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 5) / 1.09998)}")
+
+      within "#item-#{@ogre.id}" do
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+      end
+      expect(page).to have_content("Total: #{number_to_currency(@ogre.price * 8)}")
+      expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 8) / 1.1)}")
+
+      within "#item-#{@ogre.id}" do
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+      end
+      expect(page).to have_content("Total: #{number_to_currency(@ogre.price * 11)}")
+      expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 11) / 1.2)}")
+    end
+  end
 end
