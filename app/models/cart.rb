@@ -40,6 +40,19 @@ class Cart
     @contents[item_id.to_s] * Item.find(item_id).price
   end
 
+  def discounted_subtotal(item_id)
+    subtotal_of(item_id) / discount(item_id)
+  end
+
+  def discount(item_id)
+    ((maximum_savings(item_id) * 0.01) + 1).to_f
+  end
+
+  def maximum_savings(item_id)
+    item = Item.find(item_id)
+    item.merchant.coupons.where('min_items <= ?', count_of(item_id)).pluck(:percent_off).max
+  end
+
   def limit_reached?(item_id)
     count_of(item_id) == Item.find(item_id).inventory
   end

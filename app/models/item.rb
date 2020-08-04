@@ -29,4 +29,8 @@ class Item < ApplicationRecord
   def average_rating
     reviews.average(:rating)
   end
+
+  def discount_item
+    self.merchant.coupons.pluck(:min_items).min
+  end
 end

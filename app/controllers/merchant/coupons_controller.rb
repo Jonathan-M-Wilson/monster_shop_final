@@ -60,7 +60,7 @@ class Merchant::CouponsController < Merchant::BaseController
 
   private
   def coupon_params
-    params.require('coupon').permit(:name, :code, :percent_off)
+    params.require('coupon').permit(:name, :code, :percent_off, :min_items)
   end
 
   def enabled_param
