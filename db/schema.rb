@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20200801144647) do
   create_table "coupons", force: :cascade do |t|
     t.string "name"
     t.string "code"
+    t.integer "min_items"
     t.integer "percent_off"
     t.boolean "enabled", default: true
     t.datetime "created_at", null: false
