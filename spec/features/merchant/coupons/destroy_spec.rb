@@ -15,9 +15,9 @@ RSpec.describe 'As a logged-in merchant user', type: :feature do
                                     role: 1,
                                     merchant_id: @meg.id)
 
-      @coupon_1 = Coupon.create!(name: "4th of July 30%-Off", code: "FREEDOM", percent_off: 30, merchant: @meg)
-      @coupon_2 = Coupon.create!(name: "Holiday Weekend 50%-Off", code: "TAKE50", percent_off: 50, merchant: @meg)
-      @coupon_3 = Coupon.create!(name: "Bulk 5%-Off", code: "BULK", percent_off: 5, merchant: @meg, enabled: false)
+      @coupon_1 = @meg.coupons.create!(name: "4th of July 5%-Off 2 or more", code: "FREEDOM", min_items: 2, percent_off: 5, merchant: @meg)
+      @coupon_2 = @meg.coupons.create!(name: "Holiday Weekend 10%-Off 5 or more", code: "TAKE50", min_items: 5, percent_off: 10, merchant: @meg)
+      @coupon_3 = @meg.coupons.create!(name: "Bulk 20%-Off 20 or more", code: "BULK", min_items: 10, percent_off: 20, merchant: @meg, enabled: false)
 
       visit root_path
       click_on 'Log In'
