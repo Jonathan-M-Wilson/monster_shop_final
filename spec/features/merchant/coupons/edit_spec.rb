@@ -89,7 +89,7 @@ RSpec.describe 'As a logged-in Merchant user', type: :feature do
           expect(page).to have_css('h1', text: 'Edit Coupon')
           expect(page.find_field('Name').value).to eq(@coupon_1.name)
           expect(page.find_field('Code').value).to eq("")
-          expect(page.find_field('Percent Off').value).to eq("30%")
+          expect(page.find_field('Percent Off').value).to eq("5%")
 
           fill_in 'Name', with: ''
           fill_in 'Code', with: 'VeryCool'
@@ -100,7 +100,7 @@ RSpec.describe 'As a logged-in Merchant user', type: :feature do
           expect(page).to have_css('h1', text: 'Edit Coupon')
           expect(page.find_field('Name').value).to eq('')
           expect(page.find_field('Code').value).to eq('VeryCool')
-          expect(page.find_field('Percent Off').value).to eq("30%")
+          expect(page.find_field('Percent Off').value).to eq("5%")
         end
       end
 
@@ -113,7 +113,7 @@ RSpec.describe 'As a logged-in Merchant user', type: :feature do
           expect(page).to have_content("Name has already been taken")
           expect(page.find_field('Name').value).to eq(@coupon_2.name)
           expect(page.find_field('Code').value).to eq('FREEDOM')
-          expect(page.find_field('Percent Off').value).to eq("30%")
+          expect(page.find_field('Percent Off').value).to eq("5%")
 
           fill_in 'Name', with: 'Another One: Dj Khalid'
           fill_in 'Code', with: @coupon_2.code
@@ -124,7 +124,7 @@ RSpec.describe 'As a logged-in Merchant user', type: :feature do
           expect(page.find('h1').text).to eq('Edit Coupon')
           expect(page.find_field('Name').value).to eq('Another One: Dj Khalid')
           expect(page.find_field('Code').value).to eq(@coupon_2.code)
-          expect(page.find_field('Percent Off').value).to eq("30%")
+          expect(page.find_field('Percent Off').value).to eq("5%")
         end
       end
 
